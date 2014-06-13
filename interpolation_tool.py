@@ -117,6 +117,25 @@ def interpolation2D(inputdata,
         #znew = interpolate.bisplev(xnew[:,0], ynew[0,:], tck)
         
 
+def interpolation_3D_by_2Dslice(inputdata, vsize=100, hsize=100,
+                                method='linear', opt='vertical'):
+    """
+    interpolate each 2D slices from 3D data
+    slice = data3D[i,:,:]
+    """
+    
+    inputdata = np.array(inputdata)
+    input_s = inputdata.shape
+    
+    new_data = []
+    for i in range(input_s[0]):
+        temp = interpolation2D_from_1D(inputdata[i,:,:], vsize=vsize, hsize=hsize,
+                                       method=method, opt=opt)
+        new_data.append(temp)
+    
+    new_data = np.array(new_data)
+    
+    return new_data
 
 
 
