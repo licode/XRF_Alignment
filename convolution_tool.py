@@ -9,11 +9,9 @@ def conv1D_gauss(inputdata, stdv):
     """
     inputdata = np.array(inputdata)
     lenv = len(inputdata)
-    xv = np.arange(lenv)
-    halfv = (lenv-1)*1.0/2  
     
     # xrange is from (-1,1)
-    xv = (xv - halfv)/halfv
+    xv = np.linspace(-1.0, 1.0, lenv)
 
     gfun = 1./np.sqrt(2*np.pi)/stdv*np.exp(-xv**2/2/stdv**2)
     
