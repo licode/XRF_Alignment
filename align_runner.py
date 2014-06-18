@@ -92,3 +92,44 @@ def adjust_data(data3D, listv, cutv, opt='vertical'):
             data3D_0[i,:,:] = data3D[i,:,cutv+listv[i]:-cutv+listv[i]]
 
     return data3D_0
+
+
+
+def change_2Darray_with_center(data, cen_v, cen_h, 
+                               v1=10, v2=40, h1=40, h2=40):
+    """
+    adjust 2D array according to center position
+    """
+
+    data = np.array(data)
+    datas = data.shape
+
+    data_n = data[cen_v-v1:cen_v+v2, cen_h-h1:cen_h+h2]
+
+    return data_n
+
+
+def change_3Darray_with_center(data, cenlist_v, cenlist_h, 
+                               v1=10, v2=40, h1=40, h2=40):
+
+    data = np.array(data)
+    datas = data.shape
+    
+    datanew = []
+    
+    for i in range(datas[0]):
+        cen_v = cenlist_v[i]
+        cen_h = cenlist_h[i]
+        
+        data_temp  = change_2Darray_with_center(data[i,:,:], cen_v, cen_h, 
+                                                v1=10, v2=40, h1=40, h2=40)
+    
+        datanew.append(data_temp)
+        
+    return np.array(datanew)
+
+
+
+
+
+
