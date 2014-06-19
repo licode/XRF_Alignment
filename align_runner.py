@@ -42,13 +42,6 @@ class AlignRunner(object):
             newdata = self.get_interpolation(interp, 1)
         else:
             newdata = self.get_interpolation(1, interp)
-            
-        shape_n = newdata.shape
-        
-        lenlist = len(listv)
-        if lenlist != shape_n[0]:
-            print "please make sure the dimension of listv matches the data size."
-            return
         
         
         adj_new = adjust_data(newdata, listv, cutv, opt=opt)

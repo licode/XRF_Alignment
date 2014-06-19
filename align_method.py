@@ -100,6 +100,7 @@ class AlignmentMethod(object):
         data0 = data
         
         mlist = []
+        cor_all = []
         
         # get shift value
         for i in range(datas[1]):
@@ -115,7 +116,8 @@ class AlignmentMethod(object):
             cor_list = np.array(cor_list)
             pos = np.where(cor_list==np.max(cor_list))
             mlist.append(pos[0])
-        
+            cor_all.append(cor_list)
+            
         #datan = np.zeros([datas[0]+padv*2,datas[1]])
         datan = np.zeros([datas[0],datas[1]])
         
@@ -127,10 +129,7 @@ class AlignmentMethod(object):
         
         datan = datan[padv:-padv,:]
         
-        
-        data = datan
-        
-        return mlist-mlist[0], data
+        return mlist-mlist[0], datan, cor_all
 
 
     def calculate_alignment_corr_bin(self, padv = 2, bin_n = 1):
@@ -338,4 +337,11 @@ def rm_wrap(data):
 
       
     return data
+
+    
+    
+    
+    
+    
+
 

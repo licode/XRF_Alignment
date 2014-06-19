@@ -39,9 +39,15 @@ def reconstruct_phase(gx, gy):
             else:
                 cTemp = -1j * (kappax*tx[i][j]+w*kappay*ty[i][j]) / (kappax**2 + w*kappay**2)
                 c[i, j] = cTemp
-                
-    c = np.fft.ifftshift(c)
-    phi = np.fft.ifft2(c)
+    
+    padv1 = row*2
+    padv2 = column*2
+    c_new = np.zeros([row+2*padv1,column+2*padv2], dtype=complex)
+    
+    #c_new[padv1:-padv1, padv2:-padv2] = c 
+    c_new = c        
+    c_new = np.fft.ifftshift(c_new)
+    phi = np.fft.ifft2(c_new)
     phi = phi.real
     #imsave(namephi, self.phi)
     
