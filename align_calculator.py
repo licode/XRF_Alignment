@@ -24,12 +24,14 @@ class AlignCalculatorCoarse(object):
         inputdata = self.inputdata
         
         if opt=='vertical':
-            data_proj = np.sum(inputdata, axis=2)
+            data_proj = np.sum(inputdata, axis=2)    
+        
         else:
             data_proj = np.sum(inputdata, axis=1)
         
-        data_proj = np.transpose(data_proj)    
+        data_proj = np.transpose(data_proj)
         shape_p = data_proj.shape
+        print "shape is ", shape_p
 
         pos = []
         

@@ -21,6 +21,7 @@ class AlignRunner(object):
         """
         inputdata = self.inputdata
         shape_v = inputdata.shape
+        
         newdata = interpolation_3D_by_2Dslice(inputdata,
                                               vsize=shape_v[1]*interpv, 
                                               hsize=shape_v[2]*interph, opt='both')
@@ -115,7 +116,7 @@ def change_3Darray_with_center(data, cenlist_v, cenlist_h,
         cen_h = cenlist_h[i]
         
         data_temp  = change_2Darray_with_center(data[i,:,:], cen_v, cen_h, 
-                                                v1=10, v2=40, h1=40, h2=40)
+                                                v1=v1, v2=v2, h1=h1, h2=h2)
     
         datanew.append(data_temp)
         
