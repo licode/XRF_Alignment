@@ -2,51 +2,51 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 
-class AlignmentMethod(object):
+def alignment_on_edge(data, padv=14, maxv=True):
+    """
+    Do vertical alignment based on max value or min value.
 
-    def __init__(self, data):
-        """
-        data is 2D array as (intensity, angle)
-        """
-        self.data = np.array(data)
-        pass
+    Parameters
+    ----------
+    data : 2D array
+        input data for alignment
+    padv : int
+        add padding value on vertical direction
+    maxv : bool
+        choose max value or min value
 
+    Returns:
+    --------
+    list :
+        how much is shift for each horizontal position
+    array 2D :
+        aligned data
 
-    def calculate_alignment_edge(self, padv = 14, maxv=True):
-        """
-        do alignment based on edge effect, such as max value, or min value
-        """
-        data = self.data
-        datas = data.shape
-            
-        data0 = np.zeros([datas[0]+padv*2,datas[1]])
-        data0[padv:-padv,:] = data
-            
-        mlist = []
-            
-        # get shift value
-        for i in range(datas[1]):
-            linedata = data[:,i]
-            if maxv == True:
-                pos = np.where(linedata==np.max(linedata))
-            else:
-                pos = np.where(linedata==np.min(linedata))
-            mlist.append(pos[0])
-      
-        datan = np.zeros([datas[0]+padv*2,datas[1]])
-            
-        # do correction
-        for i in range(datas[1]):
-            diff = mlist[i]-mlist[0]
-            print padv+diff, -padv+diff
-            #print mlist[i], diff
-            datan[padv:-padv,i] = data0[padv+diff:-padv+diff, i]
-        
-        datan = datan[padv:-padv,:]
-        
-        data = datan
-        
-        return mlist, data
+    """
+    d_shape = data.shape
+
+    data0 = np.zeros([d_shape[0]+padv*2, d_shape[1]])
+    data0[padv:-padv, :] = data
+
+    mlist = []
+
+    # get shift value
+    for i in range(d_shape[1]):
+        linedata = data[:, i]
+        if maxv is True:
+            pos = np.where(linedata == np.max(linedata))
+        else:
+            pos = np.where(linedata == np.min(linedata))
+        mlist.append(pos[0])
+
+    # do correction
+    for i in range(datas[1]):
+        diff = mlist[i] - mlist[0]
+        #print padv+diff, -padv+diff
+        #print mlist[i], diff
+        data0[padv:-padv, i] = data0[padv+diff:-padv+diff, i]
+
+    return mlist, data0[padv:-padv, :]
 
 
     def calculate_alignment_derivative(self, padv = 10, maxv=True):
@@ -56,21 +56,21 @@ class AlignmentMethod(object):
         data = self.data
         datas = data.shape 
             
-        data0 = np.zeros([datas[0]+padv*2,datas[1]])
-        data0[padv:-padv,:] = data
+        data0 = np.zeros([datas[0]+padv*2, datas[1]])
+        data0[padv:-padv, :] = data
         
         mlist = []
         
         # get shift value
         for i in range(datas[1]):
-            grad = data[1:,i]-data[0:-1,i]
+            grad = data[1:, i] - data[0:-1, i]
             if maxv == True:
-                pos = np.where(grad==np.max(grad))
+                pos = np.where(grad == np.max(grad))
             else:
-                pos = np.where(grad==np.min(grad))
+                pos = np.where(grad == np.min(grad))
             mlist.append(pos[0])
       
-        datan = np.zeros([datas[0]+padv*2,datas[1]])
+        datan = np.zeros([datas[0]+padv*2, datas[1]])
         
         # do correction
         for i in range(datas[1]):
@@ -78,7 +78,7 @@ class AlignmentMethod(object):
             print padv+diff, -padv+diff
             datan[padv:-padv,i] = data0[padv+diff:-padv+diff, i]
         
-        datan = datan[padv:-padv,:]
+        datan = datan[padv:-padv, :]
         
         data = datan
         
