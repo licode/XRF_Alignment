@@ -3,7 +3,7 @@ from scipy.interpolate import griddata
 import numpy as np
 
         
-def interpolation1D(x,y,xnew, method='linear'):
+def interpolation1D(x, y, xnew, method='linear'):
     """
     1D interpolation using scipy interp1d
     
@@ -29,7 +29,7 @@ def interpolation2D_from_1D(inputdata, vsize=100, hsize=100,
     inputdata = np.array(inputdata)
     myshape = inputdata.shape
     
-    if opt=='vertical':
+    if opt == 'vertical':
         outdata = np.zeros([vsize, myshape[1]])
         for i in range(myshape[1]):
             x = np.linspace(0, myshape[0], myshape[0])
@@ -38,7 +38,7 @@ def interpolation2D_from_1D(inputdata, vsize=100, hsize=100,
             ynew = interpolation1D(x,y,xnew,method=method)
             outdata[:,i] = ynew
     
-    elif opt=='horizontal':
+    elif opt == 'horizontal':
         outdata = np.zeros([myshape[0], hsize])
         for i in range(myshape[0]):
             x = np.linspace(0,myshape[1], myshape[1])
@@ -124,17 +124,13 @@ def interpolation_3D_by_2Dslice(inputdata, vsize=100, hsize=100,
     slice = data3D[i,:,:]
     """
     
-    inputdata = np.array(inputdata)
+    inputdata = np.asarray(inputdata)
     input_s = inputdata.shape
     
     new_data = np.zeros([input_s[0], vsize, hsize])
     for i in range(input_s[0]):
         temp = interpolation2D_from_1D(inputdata[i,:,:], vsize=vsize, hsize=hsize,
                                        method=method, opt=opt)
-        new_data[i,:,:] = temp
+        new_data[i, :, :] = temp
     
     return new_data
-
-
-
-        

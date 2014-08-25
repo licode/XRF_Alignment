@@ -70,20 +70,20 @@ def adjust_data(data3D, listv, cutv, opt='vertical'):
     adjust either vertical or horizontal position on each 2D slice
     opt = 'vertical' or 'horizontal'
     """
-    data3D = np.array(data3D)
+    data3D = np.asarray(data3D)
     datas = data3D.shape
 
     if opt == 'vertical':
-        data3D_0 = data3D[:,cutv:-cutv,:]
+        data3D_0 = data3D[:, cutv:-cutv, :]
 
         for i in range(datas[0]):
-            data3D_0[i,:,:] = data3D[i,cutv+listv[i]:-cutv+listv[i],:]
+            data3D_0[i, :, :] = data3D[i, cutv+listv[i]:-cutv+listv[i], :]
 
     else:
-        data3D_0 = data3D[:,:, cutv:-cutv]
+        data3D_0 = data3D[:, :, cutv:-cutv]
 
         for i in range(datas[0]):
-            data3D_0[i,:,:] = data3D[i,:,cutv+listv[i]:-cutv+listv[i]]
+            data3D_0[i, :, :] = data3D[i, :, cutv+listv[i]:-cutv+listv[i]]
 
     return data3D_0
 

@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
 
 
 def alignment_on_edge(data, padv=14, maxv=True):
@@ -39,11 +40,11 @@ def alignment_on_edge(data, padv=14, maxv=True):
         mlist.append(pos[0])
 
     # do correction
+    diff_list = np.array(mlist) - mlist[0]
     for i in range(datas[1]):
-        diff = mlist[i] - mlist[0]
-        data0[padv:-padv, i] = data0[padv+diff:-padv+diff, i]
+        data0[padv:-padv, i] = data0[padv+diff_list[i]:-padv+diff_list[i], i]
 
-    return mlist, data0[padv:-padv, :]
+    return diff_list, data0[padv:-padv, :]
 
 
 def alignment_on_derivative(data, padv=10, maxv=True):
@@ -71,26 +72,29 @@ def alignment_on_derivative(data, padv=10, maxv=True):
     data0 = np.zeros([d_shape[0]+padv*2, d_shape[1]])
     data0[padv:-padv, :] = data
 
-    mlist = []
+    mlist = np.zeros(d_shape[1])
 
     # get shift value
     for i in range(d_shape[1]):
         grad = data[1:, i] - data[0:-1, i]
         if maxv is True:
-            pos = np.where(grad == np.max(grad))
+            pos = np.where(grad == np.max(grad))[0]
         else:
-            pos = np.where(grad == np.min(grad))
-        mlist.append(pos[0])
+            pos = np.where(grad == np.min(grad))[0]
+        print pos[0]
+        mlist[i] = pos[0]
 
-    #datan = np.zeros([datas[0]+padv*2, datas[1]])
+    #plt.plot(data[1:, 20] - data[0:-1, 20])
+    #plt.show()
 
     # do correction
-    for i in range(datas[1]):
-        diff = mlist[i] - mlist[0]
-        #print padv+diff, -padv+diff
-        data0[padv:-padv, i] = data0[padv+diff:-padv+diff, i]
+    diff_list = mlist - mlist[0]
+    #print diff_list
 
-    return mlist, data0[padv:-padv, :]
+    for i in range(d_shape[1]):
+        data0[padv:-padv, i] = data0[padv+diff_list[i]:-padv+diff_list[i], i]
+
+    return diff_list, data0[padv:-padv, :]
 
 
 def alignment_on_correlation(data, padv=2):
@@ -116,7 +120,7 @@ def alignment_on_correlation(data, padv=2):
 
     d_shape = data.shape
 
-    mlist = []
+    mlist = np.zeros(d_shape[1])
     cor_all = []
 
     # get shift value
@@ -133,15 +137,15 @@ def alignment_on_correlation(data, padv=2):
 
         cor_list = np.array(cor_list)
         pos = np.where(cor_list == np.max(cor_list))
-        mlist.append(pos[0])
+        mlist[i] = pos[0]
         cor_all.append(cor_list)
 
     # do correction
-    diff_list = np.array(mlist) - mlist[0]
+    diff_list = mlist - mlist[0]
     for i in range(d_shape[1]):
         data[padv:-padv, i] = data[padv+diff_list[i]:-padv+diff_list[i], i]
 
-    return diff_list, data[padv:-padv, :], cor_all
+    return diff_list, data[padv:-padv, :] #, cor_all
 
 
 def calculate_alignment_corr_bin(data, padv=2, bin_n=1):

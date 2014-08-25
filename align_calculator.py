@@ -4,7 +4,7 @@ calculate shift position based different alignment methods
 import numpy as np
 
 from interpolation_tool import interpolation2D_from_1D
-from align_method import AlignmentMethod
+from align_method import alignment_on_correlation, alignment_on_derivative
 
 
 class AlignCalculatorCoarse(object):
@@ -66,7 +66,6 @@ class AlignCalculatorCoarse(object):
             pos.append(int(cen_y))
             
         return np.array(pos)
-    
         
 
 class AlignCalculatorFine(object):
@@ -75,13 +74,13 @@ class AlignCalculatorFine(object):
     """
     
     def __init__(self, data):
-        self.data = np.array(data)
+        self.data = np.asarray(data)
         return
     
     def get_projection(self, opt='vertical'):
         data = self.data
 
-        if opt=='vertical':
+        if opt == 'vertical':
             data_proj = np.sum(data, axis=2)
         else:
             data_proj = np.sum(data, axis=1)
@@ -114,20 +113,5 @@ class AlignCalculatorFine(object):
         #proj = self.get_projection(opt=opt)
         #proj_n = self.get_interpolation(proj, interp=interp)
         
-        AM = AlignmentMethod(proj)
-        listv, data_n, corr_list = AM.calculate_alignment_corr(padv=cutv)
-        
-        return listv, data_n, corr_list
-        
-        
-        
-        
-        
-    
-    
-        
-    
-    
-    
-    
-    
+        return alignment_on_correlation(proj, padv=cutv)
+        #return alignment_on_derivative(proj, padv=cutv)
