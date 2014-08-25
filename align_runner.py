@@ -74,19 +74,13 @@ def adjust_data(data3D, listv, cutv, opt='vertical'):
     datas = data3D.shape
 
     if opt == 'vertical':
-        data3D_0 = data3D[:, cutv:-cutv, :]
-
         for i in range(datas[0]):
-            data3D_0[i, :, :] = data3D[i, cutv+listv[i]:-cutv+listv[i], :]
-
+            data3D[i, cutv:-cutv, :] = data3D[i, cutv+listv[i]:-cutv+listv[i], :]
+        return data3D[:, cutv:-cutv, :]
     else:
-        data3D_0 = data3D[:, :, cutv:-cutv]
-
         for i in range(datas[0]):
-            data3D_0[i, :, :] = data3D[i, :, cutv+listv[i]:-cutv+listv[i]]
-
-    return data3D_0
-
+            data3D[i, :, cutv:-cutv] = data3D[i, :, cutv+listv[i]:-cutv+listv[i]]
+        return data3D[:, :, cutv:-cutv]
 
 
 def change_2Darray_with_center(data, cen_v, cen_h, 
