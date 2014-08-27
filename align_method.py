@@ -231,17 +231,15 @@ def do_vertical_alignment(center_list, data_all):
     data_aligny = np.zeros([s[0], s[1], s[2]])
 
     for i in range(s[0]):
-        d = data_all[i,:,:]
-        d = np.reshape(d,[s[1],s[2]])
+        d = data_all[i, :, :]
+        d = np.reshape(d, [s[1], s[2]])
 
-        cenv = center_list[i,0]
+        cenv = center_list[i, 0]
         data_temp = np.zeros([s[1]+2*padv, s[2]])
-        data_temp[padv:-padv,:] = d
-        data_aligny[i,:,:] = data_temp[padv+cenv:-padv+cenv,:]
-
+        data_temp[padv:-padv, :] = d
+        data_aligny[i, :, :] = data_temp[padv+cenv:-padv+cenv,:]
 
     return data_aligny
-    
 
 
 def get_correlation(data1, data2):
@@ -327,7 +325,6 @@ def rebin_data_shrink(data, m=2):
     return datanew
 
 
-
 def sin_fun(x,a,b,c):
     return a*np.sin(1.0*x+b)+c
 
@@ -360,5 +357,4 @@ def rm_wrap(data):
             
         data[0:len(y),i] = data[0:len(y),i]-yfit
 
-      
     return data

@@ -11,7 +11,7 @@ class AlignRunner(object):
     interpolation, do alignment based on given algorithm, then interpolate back
     """
     def __init__(self, inputdata):
-        self.inputdata = np.array(inputdata)
+        self.inputdata = np.asarray(inputdata)
         return
     
     
@@ -34,7 +34,7 @@ class AlignRunner(object):
         pass
 
 
-    def run(self, listv, interp=1, cutv=0, opt='vertical'):
+    def run(self, listv, interp=1, cutv=0, vertical=True):
         """
         work on either vertical or horizontal
         most of the cases we will focus on vertical direction
@@ -43,14 +43,13 @@ class AlignRunner(object):
             newdata = self.get_interpolation(interp, 1)
         else:
             newdata = self.get_interpolation(1, interp)
-        
-        
-        adj_new = adjust_data(newdata, listv, cutv, opt=opt)
+
+        adj_new = adjust_data(newdata, listv, cutv, vertical=vertical)
         
         # interpolate back
         shape_adj = adj_new.shape
         
-        if opt == 'vertical':
+        if vertical is True:
             v_new = int(shape_adj[1]/interp)
             h_new = shape_adj[2]
         else:
@@ -61,24 +60,36 @@ class AlignRunner(object):
                                                  vsize=v_new, 
                                                  hsize=h_new, opt='both')
         return final_data
-        
-        
 
 
-def adjust_data(data3D, listv, cutv, opt='vertical'):
+def adjust_data(data3D, listv, cutv, vertical=True):
     """
-    adjust either vertical or horizontal position on each 2D slice
-    opt = 'vertical' or 'horizontal'
+    Adjust either vertical or horizontal position on each 2D slice.
+
+    Parameters
+    ----------
+    data3D : 3D array
+        input data
+    listv : list
+        position difference to be adjusted
+    cutv : float
+        cut the array first in order to adjust postion
+    vertical : bool
+        do vertical alignment or horizontal
+
+    Returns
+    -------
+    array :
+        after adjustment, the size is cutted by cutv in given dimension
     """
     data3D = np.asarray(data3D)
-    datas = data3D.shape
 
-    if opt == 'vertical':
-        for i in range(datas[0]):
+    if vertical is True:
+        for i in range(data3D.shape[0]):
             data3D[i, cutv:-cutv, :] = data3D[i, cutv+listv[i]:-cutv+listv[i], :]
         return data3D[:, cutv:-cutv, :]
     else:
-        for i in range(datas[0]):
+        for i in range(data3D.shape[0]):
             data3D[i, :, cutv:-cutv] = data3D[i, :, cutv+listv[i]:-cutv+listv[i]]
         return data3D[:, :, cutv:-cutv]
 
@@ -115,9 +126,3 @@ def change_3Darray_with_center(data, cenlist_v, cenlist_h,
         datanew.append(data_temp)
         
     return np.array(datanew)
-
-
-
-
-
-
