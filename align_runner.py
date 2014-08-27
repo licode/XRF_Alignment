@@ -14,52 +14,49 @@ class AlignRunner(object):
         self.inputdata = np.asarray(inputdata)
         return
     
-    
     def get_interpolation(self, interpv, interph):
         """
         do interpolation in either direction
         """
         inputdata = self.inputdata
         shape_v = inputdata.shape
-        
-        newdata = interpolation_3D_by_2Dslice(inputdata,
-                                              vsize=shape_v[1]*interpv, 
-                                              hsize=shape_v[2]*interph, opt='both')
-        
-        return newdata
-        
-        
+        return interpolation_3D_by_2Dslice(inputdata,
+                                           vsize=shape_v[1]*interpv,
+                                           hsize=shape_v[2]*interph, opt='both')
+
     def adjust_data(self, listv):
-        
         pass
 
-
-    def run(self, listv, interp=1, cutv=0, vertical=True):
+    def run(self, listv, cutv=0,
+            interp=None, vertical=True):
         """
         work on either vertical or horizontal
         most of the cases we will focus on vertical direction
         """
-        if opt == 'vertical':
-            newdata = self.get_interpolation(interp, 1)
-        else:
-            newdata = self.get_interpolation(1, interp)
 
-        adj_new = adjust_data(newdata, listv, cutv, vertical=vertical)
-        
-        # interpolate back
-        shape_adj = adj_new.shape
-        
-        if vertical is True:
-            v_new = int(shape_adj[1]/interp)
-            h_new = shape_adj[2]
+        if interp:
+            if vertical is True:
+                newdata = self.get_interpolation(interp, 1)
+            else:
+                newdata = self.get_interpolation(1, interp)
+
+            adj_new = adjust_data(newdata, listv, cutv, vertical=vertical)
+
+            # interpolate back
+            shape_adj = adj_new.shape
+
+            if vertical is True:
+                v_new = int(shape_adj[1]/interp)
+                h_new = shape_adj[2]
+            else:
+                v_new = shape_adj[1]
+                h_new = int(shape_adj[2]/interp)
+
+            return interpolation_3D_by_2Dslice(adj_new,
+                                               vsize=v_new,
+                                               hsize=h_new, opt='both')
         else:
-            v_new = shape_adj[1]
-            h_new = int(shape_adj[2]/interp)
-            
-        final_data = interpolation_3D_by_2Dslice(adj_new,
-                                                 vsize=v_new, 
-                                                 hsize=h_new, opt='both')
-        return final_data
+            return adjust_data(self.inputdata, listv, cutv, vertical=vertical)
 
 
 def adjust_data(data3D, listv, cutv, vertical=True):
@@ -75,7 +72,7 @@ def adjust_data(data3D, listv, cutv, vertical=True):
     cutv : float
         cut the array first in order to adjust postion
     vertical : bool
-        do vertical alignment or horizontal
+        do vertical or horizontal alignment
 
     Returns
     -------

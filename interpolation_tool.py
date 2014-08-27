@@ -129,7 +129,7 @@ def interpolation_3D_by_2Dslice(inputdata, vsize=100, hsize=100,
     
     new_data = np.zeros([input_s[0], vsize, hsize])
     for i in range(input_s[0]):
-        temp = interpolation2D_from_1D(inputdata[i,:,:], vsize=vsize, hsize=hsize,
+        temp = interpolation2D_from_1D(inputdata[i, :, :], vsize=vsize, hsize=hsize,
                                        method=method, opt=opt)
         new_data[i, :, :] = temp
     
